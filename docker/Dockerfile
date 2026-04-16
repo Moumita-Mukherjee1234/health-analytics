@@ -1,15 +1,16 @@
 FROM python:3.11-slim
 
-# Install PostgreSQL client
+# Install system packages + PostgreSQL client
 RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
     postgresql-client \
-    build-essential \
     && rm -rf /var/lib/apt/lists/*
 
-# Set work directory
+# Set working directory
 WORKDIR /app
 
-# Copy requirements
+# Copy requirements first (better caching)
 COPY requirements.txt .
 
 # Install Python libraries
@@ -19,4 +20,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8888
 
 # Default command
-CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--allow-root", "--no-browser"]
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
