@@ -285,3 +285,63 @@ JOIN patients p ON a.patient_id = p.patient_id
 JOIN doctors d ON a.doctor_id = d.doctor_id
 JOIN treatments t ON a.appointment_id = t.appointment_id
 JOIN billing b ON t.treatment_id = b.treatment_id;
+
+
+--step 3
+
+--1️⃣ Patient Inflow Over Time (Admissions Proxy)
+SELECT
+    appointment_date,
+    COUNT(*) AS patient_inflow
+FROM appointments
+GROUP BY appointment_date
+ORDER BY appointment_date;
+
+
+--2️⃣ Calculate Wait Time (Appointment → Treatment)
+
+--This is the real patient wait time in your data.
+
+SELECT
+    d.specialization,
+    ROUND(AVG(t.treatment_date - a.appointment_date), 2) AS avg_wait_days
+FROM appointments a
+JOIN treatments t ON a.appointment_id = t.appointment_id
+JOIN doctors d ON a.doctor_id = d.doctor_id
+GROUP BY d.specialization
+ORDER BY avg_wait_days DESC;
+
+
+--3️⃣ Bottleneck Specializations
+
+--High wait time + high appointments = bottleneck.
+
+SELECT
+    d.specialization,
+    COUNT(a.appointment_id) AS total_patients,
+    ROUND(AVG(t.treatment_date - a.appointment_date), 2) AS avg_wait_days
+FROM appointments a
+JOIN treatments t ON a.appointment_id = t.appointment_id
+JOIN doctors d ON a.doctor_id = d.doctor_id
+GROUP BY d.specialization
+ORDER BY avg_wait_days DESC, total_patients DESC;
+
+
+--4️⃣ Daily Patient Flow by Specialization
+SELECT
+    appointment_date,
+    d.specialization,
+    COUNT(*) AS patients
+FROM appointments a
+JOIN doctors d ON a.doctor_id = d.doctor_id
+GROUP BY appointment_date, d.specialization
+ORDER BY appointment_date;
+
+
+--5️⃣ Peak Days of Hospital Load
+SELECT
+    appointment_date,
+    COUNT(*) AS total_patients
+FROM appointments
+GROUP BY appointment_date
+ORDER BY total_patients DESC;
