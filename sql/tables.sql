@@ -345,3 +345,63 @@ SELECT
 FROM appointments
 GROUP BY appointment_date
 ORDER BY total_patients DESC;
+
+
+--step4
+
+--1️⃣ Payment Default Risk
+SELECT
+    payment_status,
+    COUNT(*) AS count,
+    COUNT(*) * 100.0 / SUM(COUNT(*)) OVER() AS percentage
+FROM billing
+GROUP BY payment_status;
+
+--Insight: % unpaid / pending bills.
+
+--2️⃣ High-Cost Treatment Risk
+SELECT
+    treatment_type,
+    ROUND(AVG(cost),2) AS avg_cost,
+    MAX(cost) AS max_cost
+FROM treatments
+GROUP BY treatment_type
+ORDER BY avg_cost DESC;
+
+--Insight: Expensive treatments = financial risk.
+
+--3️⃣ Overloaded Specializations (Operational Risk)
+SELECT
+    d.specialization,
+    COUNT(a.appointment_id) AS total_appointments
+FROM appointments a
+JOIN doctors d ON a.doctor_id = d.doctor_id
+GROUP BY d.specialization
+ORDER BY total_appointments DESC;
+
+--Insight: Departments under pressure.
+
+--4️⃣ High-Visit Patients (Health Risk)
+SELECT
+    p.patient_id,
+    p.first_name || ' ' || p.last_name AS patient_name,
+    COUNT(a.appointment_id) AS visit_count
+FROM appointments a
+JOIN patients p ON a.patient_id = p.patient_id
+GROUP BY p.patient_id, patient_name
+HAVING COUNT(a.appointment_id) > 3
+ORDER BY visit_count DESC;
+
+--Insight: Patients requiring frequent care.
+
+--5️⃣ Doctor Burnout Risk
+SELECT
+    d.first_name || ' ' || d.last_name AS doctor_name,
+    d.specialization,
+    COUNT(a.appointment_id) AS total_patients
+FROM doctors d
+JOIN appointments a ON d.doctor_id = a.doctor_id
+GROUP BY doctor_name, d.specialization
+ORDER BY total_patients DESC;
+
+--Insight: Doctors seeing too many patients.
