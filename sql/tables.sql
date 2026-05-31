@@ -405,3 +405,72 @@ GROUP BY doctor_name, d.specialization
 ORDER BY total_patients DESC;
 
 --Insight: Doctors seeing too many patients.
+
+
+
+-- step 5
+
+
+
+--1️⃣ Patient Volume Trend (SQL → CSV)
+
+
+SELECT
+    appointment_date,
+    COUNT(*) AS total_patients
+FROM appointments
+GROUP BY appointment_date
+ORDER BY appointment_date;
+
+
+
+
+--2️⃣ Revenue Trend (SQL → CSV)
+SELECT
+    bill_date,
+    SUM(amount) AS total_revenue
+FROM billing
+GROUP BY bill_date
+ORDER BY bill_date;
+
+
+
+--3️⃣ Specialization Load (SQL → CSV)
+SELECT
+    d.specialization,
+    COUNT(a.appointment_id) AS appointments
+FROM appointments a
+JOIN doctors d ON a.doctor_id = d.doctor_id
+GROUP BY d.specialization
+ORDER BY appointments DESC;
+
+
+
+--4️⃣ Wait Time by Specialization (SQL → CSV)
+SELECT
+    d.specialization,
+    ROUND(AVG(t.treatment_date - a.appointment_date), 2) AS avg_wait_days
+FROM appointments a
+JOIN treatments t ON a.appointment_id = t.appointment_id
+JOIN doctors d ON a.doctor_id = d.doctor_id
+GROUP BY d.specialization;
+
+
+
+--5️⃣ Payment Status Distribution (SQL → CSV)
+SELECT
+    payment_status,
+    COUNT(*) AS count
+FROM billing
+GROUP BY payment_status;
+
+
+
+--6️⃣ Doctor Efficiency (SQL → CSV)
+SELECT
+    d.first_name || ' ' || d.last_name AS doctor_name,
+    d.specialization,
+    COUNT(a.appointment_id) AS total_patients
+FROM doctors d
+JOIN appointments a ON d.doctor_id = a.doctor_id
+GROUP BY doctor_name, d.specialization;
