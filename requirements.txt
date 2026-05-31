@@ -2,7 +2,7 @@ pandas
 numpy
 matplotlib
 seaborn
-plotly
+jupyter
 sqlalchemy
 psycopg2-binary
-jupyter
+openpyxl
