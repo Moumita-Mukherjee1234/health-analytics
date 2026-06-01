@@ -32,7 +32,7 @@ https://youtube.com/your-demo-link
 
 ## 🏗️ Project Architecture
 
-![Project Architecture](assets/project architechture.png)
+![Project Architecture](assets/project_architechture.png)
 
 ```mermaid
 flowchart TD
