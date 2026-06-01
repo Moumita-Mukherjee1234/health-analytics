@@ -34,29 +34,6 @@ https://youtube.com/your-demo-link
 
 ![Project Architecture](assets/project_architechture.png)
 
-```mermaid
-flowchart TD
-A[Raw Hospital Dataset CSV] --> B[PostgreSQL Database]
-B --> C[SQL Queries]
-C --> D[Data Cleaning & Transformation]
-D --> E[Python Analysis]
-E --> F[Pandas & Matplotlib]
-F --> G[Processed Analytics Dataset]
-G --> H[Power BI Dashboard]
-
-H --> I[Overview Dashboard]
-H --> J[Patient Flow Dashboard]
-H --> K[Department Efficiency Dashboard]
-
-I --> L[Business Insights]
-J --> L
-K --> L
-
-M[Docker Container] -.-> B
-M -.-> C
-M -.-> D
-M -.-> E
-```
 
 ---
 
