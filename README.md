@@ -25,7 +25,7 @@ Analyze hospital operations, patient flow, department efficiency, and revenue tr
 Add your YouTube walkthrough link here.
 
 ```text
-https://youtube.com/your-demo-link
+https://youtu.be/7KRzSMAXA1o?si=usXiEwV5Ih_CBduX
 ```
 
 ---
